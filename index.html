@@ -25,14 +25,32 @@
                 var file_data = data;
 
                 var cm = CodeMirror(document.querySelector('#codeMirror'), {
+                    theme: 'twilight',
                     value: data,
+                    lineNumbers: true,
+                    extraKeys: {
+                        'Ctrl-S': function(cm){
+
+                            var c = cm.doc.getValue();
+                            console.log('being asked to save');
+                            console.log(c);
+                            socket.emit('save_document',{
+
+                                content: c
+                            })
+                        }
+                    },
                     mode: 'javascript'
                 });
 
                 cm.on('change', function(){
-                    console.log("i have been changed");
+                    console.log("File has been changed - perhaps 'auto' save to DB?");
                 });
 
+                cm.on('saved_doc', function(data){
+
+                    console.log("is doc saved? " + data.saved);
+                });
             });
         });
 
