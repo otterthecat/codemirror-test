@@ -21,6 +21,9 @@ body {
   -webkit-transition: left 100ms linear;
   -moz-transition: left 100ms linear;
 }
+.app .editor button {
+  float: right;
+}
 .app .preview {
   left: 100%;
   background-color: green;
