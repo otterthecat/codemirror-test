@@ -8,6 +8,11 @@ io.sockets.on('connection', function(socket){
 
     working_file = path;
 
+    fs.watchFile('files/test.js', function(){
+
+      socket.emit('update_file', {'updated': true});
+    });
+
     fs.readFile(working_file, 'utf8', function(error, data){
 
         socket.emit('return_file_data', data);
@@ -16,11 +21,8 @@ io.sockets.on('connection', function(socket){
 
 
   socket.on('save_document', function(document){
-    console.log("++++++");
-    console.log(document);
-    console.log("++++++")
-    var content = document.content;
 
+    var content = document.content;
     var c = new Buffer(content, 'utf8');
 
     var stream = fs.createWriteStream(working_file, {'flags': 'w'});

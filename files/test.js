@@ -1,4 +1,5 @@
-var x = "hello";
-conosle.log(x);
+var x = "I'm from the edited file";
+console.log(x);
 
 var s = "string";
+console.log(s);

@@ -3,58 +3,27 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <script src="codemirror-3.15/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="codemirror-3.15/lib/codemirror.css">
     <link rel="stylesheet" href="codemirror-3.15/theme/twilight.css">
     <script src="codemirror-3.15/mode/javascript/javascript.js"></script>
     <script type="text/javascript" src="http://127.0.0.1:4000/socket.io/socket.io.js"></script>
+
 </head>
 <body>
 
-    <div id="codeMirror"></div>
 
+    <div class="app">
+        <div class="editor">
+            <div id="codeMirror"></div>
+        </div>
 
-    <script>
+        <div class="preview">
+            <iframe src="web/index.html" frameborder="0"></iframe>
+        </div>
+    </div>
 
-        var socket = io.connect('http://sol.local:4000');
-        socket.on('connect', function(){
-
-            socket.emit('getFile', 'files/test.js');
-
-            socket.on('return_file_data', function(data){
-
-                var file_data = data;
-
-                var cm = CodeMirror(document.querySelector('#codeMirror'), {
-                    theme: 'twilight',
-                    value: data,
-                    lineNumbers: true,
-                    extraKeys: {
-                        'Ctrl-S': function(cm){
-
-                            var c = cm.doc.getValue();
-                            console.log('being asked to save');
-                            console.log(c);
-                            socket.emit('save_document',{
-
-                                content: c
-                            })
-                        }
-                    },
-                    mode: 'javascript'
-                });
-
-                cm.on('change', function(){
-                    console.log("File has been changed - perhaps 'auto' save to DB?");
-                });
-
-                cm.on('saved_doc', function(data){
-
-                    console.log("is doc saved? " + data.saved);
-                });
-            });
-        });
-
-    </script>
-
+    <script src="client/ViewSwitcher.js"></script>
+    <script src="client/app.js"></script>
 </body>
 </html>
