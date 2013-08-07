@@ -18,16 +18,20 @@ var generateFileDisplay = function(fileList){
     }
 }
 
-var socket = io.connect('http://sol.local:4000');
+var socket = io.connect('http://localhost:4000');
+var iframe = document.querySelector('iframe');
+
+
 socket.on('connect', function(){
 
     socket.emit('getFile', 'files');
 
-    socket.on('update_file', function(data){
+    socket.on('saved_doc', function(data){
 
-        var i = document.querySelector('iframe');
+        if (data.saved){
 
-        i.contentWindow.location.reload();
+            iframe.contentWindow.location.reload();
+        }
     });
 
     socket.on('return_file_data', function(data){
@@ -59,11 +63,6 @@ socket.on('connect', function(){
 
             cm.on('change', function(){
                 console.log("File has been changed - perhaps 'auto' save to DB?");
-            });
-
-            cm.on('saved_doc', function(data){
-
-                console.log("is doc saved? " + data.saved);
             });
         }
 
