@@ -1,3 +1,23 @@
+var generateFileDisplay = function(fileList){
+
+    var ul = document.querySelector('ul');
+
+    ul.onclick = function(event){
+        console.log(event.target);
+    }
+
+    for (key in fileList){
+
+        var li = document.createElement('li');
+        li.setAttribute('data-file', key);
+        li.innerHTML = key;
+
+        // this should really be done after the loop
+        // with the full list of elements (use string instead of object)
+        ul.appendChild(li);
+    }
+}
+
 var socket = io.connect('http://sol.local:4000');
 socket.on('connect', function(){
 
@@ -6,8 +26,6 @@ socket.on('connect', function(){
     socket.on('update_file', function(data){
 
         var i = document.querySelector('iframe');
-        console.log("iframe = ");
-        console.log(i);
 
         i.contentWindow.location.reload();
     });
@@ -17,6 +35,8 @@ socket.on('connect', function(){
         var file_data = data;
         var path = data.path;
         var files = data.files;
+
+        generateFileDisplay(files);
 
         for(key in files) {
 

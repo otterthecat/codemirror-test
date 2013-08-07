@@ -21,6 +21,16 @@ body {
   -webkit-transition: left 100ms linear;
   -moz-transition: left 100ms linear;
 }
+.app .editor #nav,
+.app .editor #codeMirror {
+  display: inline-block;
+}
+.app .editor #nav {
+  width: 25%;
+}
+.app .editor #codeMirror {
+  width: 75%;
+}
 .app .editor button {
   float: right;
 }
