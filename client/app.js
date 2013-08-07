@@ -1,7 +1,7 @@
 var socket = io.connect('http://sol.local:4000');
 socket.on('connect', function(){
 
-    socket.emit('getFile', 'files/test.js');
+    socket.emit('getFile', 'files');
 
     socket.on('update_file', function(data){
 
@@ -15,33 +15,37 @@ socket.on('connect', function(){
     socket.on('return_file_data', function(data){
 
         var file_data = data;
+        var path = data.path;
+        var files = data.files;
 
-        var cm = CodeMirror(document.querySelector('#codeMirror'), {
-            theme: 'twilight',
-            value: data,
-            lineNumbers: true,
-            extraKeys: {
-                'Ctrl-S': function(cm){
+        for(key in files) {
 
-                    var c = cm.doc.getValue();
-                    console.log('being asked to save');
-                    console.log(c);
-                    socket.emit('save_document',{
+            var cm = CodeMirror(document.querySelector('#codeMirror'), {
+                theme: 'twilight',
+                value: files[key],
+                lineNumbers: true,
+                extraKeys: {
+                    'Ctrl-S': function(cm){
 
-                        content: c
-                    })
-                }
-            },
-            mode: 'javascript'
-        });
+                        var c = cm.doc.getValue();
+                        socket.emit('save_document',{
+                            'path': path + '/' + key,
+                            'content': c
+                        })
+                    }
+                },
+                mode: 'javascript'
+            });
 
-        cm.on('change', function(){
-            console.log("File has been changed - perhaps 'auto' save to DB?");
-        });
+            cm.on('change', function(){
+                console.log("File has been changed - perhaps 'auto' save to DB?");
+            });
 
-        cm.on('saved_doc', function(data){
+            cm.on('saved_doc', function(data){
 
-            console.log("is doc saved? " + data.saved);
-        });
+                console.log("is doc saved? " + data.saved);
+            });
+        }
+
     });
 });
