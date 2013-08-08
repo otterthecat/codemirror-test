@@ -4,6 +4,12 @@ var working_file = null;
 io.sockets.on('connection', function(socket){
 
 
+ fs.watch('files/', function(){
+
+    socket.emit('update_files', {'updated': true});
+  });
+
+
   socket.on('getFile', function(path){
 
     working_path = path;

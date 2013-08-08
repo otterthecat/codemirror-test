@@ -26,12 +26,17 @@ socket.on('connect', function(){
 
     socket.emit('getFile', 'files');
 
-    socket.on('saved_doc', function(data){
+    socket.on('update_files', function(data){
 
-        if (data.saved){
+        if (data.updated){
 
             iframe.contentWindow.location.reload();
         }
+    });
+
+    socket.on('saved_doc', function(data){
+
+        console.log("was document saved? " + data.saved);
     });
 
     socket.on('return_file_data', function(data){
