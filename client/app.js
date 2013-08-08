@@ -4,6 +4,12 @@ var generateFileDisplay = function(fileList){
 
     ul.onclick = function(event){
         console.log(event.target);
+
+        var selection = event.target;
+        socket.emit('getFile', {
+            'path': 'files',
+            'file': selection.getAttribute('data-file')
+        });
     }
 
     for (key in fileList){
@@ -18,13 +24,38 @@ var generateFileDisplay = function(fileList){
     }
 }
 
+var createEditor = function(project){
+    console.log('create editor for ' + project.file);
+    var content = project.content;
+    var the_file = project.file;
+    var cm = CodeMirror(document.querySelector('#codeMirror'), {
+        theme: 'twilight',
+        value: content,
+        lineNumbers: true,
+        extraKeys: {
+            'Ctrl-S': function(cm){
+
+                socket.emit('save_document',{
+                    'path': 'file/' + the_file,
+                    'content': cm.doc.getValue()
+                })
+            }
+        },
+        mode: 'javascript'
+    });
+
+    cm.on('change', function(){
+        console.log("File has been changed - perhaps 'auto' save to DB?");
+    });
+}
+
 var socket = io.connect('http://localhost:4000');
 var iframe = document.querySelector('iframe');
 
 
 socket.on('connect', function(){
 
-    socket.emit('getFile', 'files');
+    socket.emit('load_files', 'files');
 
     socket.on('update_files', function(data){
 
@@ -47,29 +78,10 @@ socket.on('connect', function(){
 
         generateFileDisplay(files);
 
-        for(key in files) {
+    });
 
-            var cm = CodeMirror(document.querySelector('#codeMirror'), {
-                theme: 'twilight',
-                value: files[key],
-                lineNumbers: true,
-                extraKeys: {
-                    'Ctrl-S': function(cm){
+    socket.on('edit_file', function(data){
 
-                        var c = cm.doc.getValue();
-                        socket.emit('save_document',{
-                            'path': path + '/' + key,
-                            'content': c
-                        })
-                    }
-                },
-                mode: 'javascript'
-            });
-
-            cm.on('change', function(){
-                console.log("File has been changed - perhaps 'auto' save to DB?");
-            });
-        }
-
+        createEditor(data);
     });
 });

@@ -10,9 +10,9 @@ io.sockets.on('connection', function(socket){
   });
 
 
-  socket.on('getFile', function(path){
+  socket.on('load_files', function(dir){
 
-    working_path = path;
+    working_path = dir;
 
     fs.readdir(working_path, function(error, files){
 
@@ -27,6 +27,19 @@ io.sockets.on('connection', function(socket){
 
         socket.emit('return_file_data', {'files': details, 'path': working_path});
 
+    });
+  });
+
+  socket.on('getFile', function(fileData){
+
+    fs.readFile(fileData.path + '/' + fileData.file, 'utf8', function(e, d){
+
+      socket.emit('edit_file', {
+        'file': fileData.file,
+        'path': fileData.path,
+        'mode': 'javascript',
+        'content': d
+      })
     });
   });
 
