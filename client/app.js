@@ -26,6 +26,7 @@ var generateFileDisplay = function(fileList){
 
 var createEditor = function(project){
     console.log('create editor for ' + project.file);
+    console.log(project);
     var content = project.content;
     var the_file = project.file;
     var cm = CodeMirror(document.querySelector('#codeMirror'), {
@@ -36,12 +37,12 @@ var createEditor = function(project){
             'Ctrl-S': function(cm){
 
                 socket.emit('save_document',{
-                    'path': 'file/' + the_file,
+                    'path': 'files/' + the_file,
                     'content': cm.doc.getValue()
                 })
             }
         },
-        mode: 'javascript'
+        mode: project.mode
     });
 
     cm.on('change', function(){
@@ -72,7 +73,6 @@ socket.on('connect', function(){
 
     socket.on('return_file_data', function(data){
 
-        var file_data = data;
         var path = data.path;
         var files = data.files;
 

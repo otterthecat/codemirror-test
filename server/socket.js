@@ -1,11 +1,26 @@
 var io = require('socket.io').listen(4000);
 var fs = require('fs');
+var fpath = require('path');
 var working_file = null;
 io.sockets.on('connection', function(socket){
 
 
- fs.watch('files/', function(){
+var modes = {
+    'js': 'javascript',
+    'css': 'css',
+    'less': 'less',
+    'html': 'xml'
+}
 
+var getMode = function(modeObj, fileName){
+
+  var extension = fpath.extname(fileName).substr(1);
+
+  return modes[extension];
+}
+
+ fs.watch('files/', function(){
+  console.log('\n ===== watched & found =====');
     socket.emit('update_files', {'updated': true});
   });
 
@@ -32,12 +47,13 @@ io.sockets.on('connection', function(socket){
 
   socket.on('getFile', function(fileData){
 
-    fs.readFile(fileData.path + '/' + fileData.file, 'utf8', function(e, d){
+    var the_file = fileData.file;
+    fs.readFile(fileData.path + '/' + the_file, 'utf8', function(e, d){
 
       socket.emit('edit_file', {
-        'file': fileData.file,
+        'file': the_file,
         'path': fileData.path,
-        'mode': 'javascript',
+        'mode': getMode(modes, the_file),
         'content': d
       })
     });
