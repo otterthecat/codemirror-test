@@ -20,7 +20,7 @@ var getMode = function(modeObj, fileName){
 }
 
  fs.watch('files/', function(){
-  console.log('\n ===== watched & found =====');
+
     socket.emit('update_files', {'updated': true});
   });
 
