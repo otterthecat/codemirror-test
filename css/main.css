@@ -26,21 +26,19 @@ body {
   display: inline-block;
 }
 .app .editor #nav {
-  width: 25%;
+  width: 15%;
+  float: left;
 }
 .app .editor #codeMirror {
-  width: 75%;
-}
-.app .editor button {
-  float: right;
+  width: 85%;
 }
 .app .preview {
   left: 100%;
   background-color: green;
 }
 .slide .editor {
-  left: -50%;
+  left: -100%;
 }
 .slide .preview {
-  left: 50%;
+  left: 0;
 }
